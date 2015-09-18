@@ -1,6 +1,9 @@
 # mta-exam-scraper
 Scrap exam information from MTA website
 
+# Demo
+[![asciicast](https://asciinema.org/a/4trul1yd7kruv9hltyz3x5brj.png)](https://asciinema.org/a/4trul1yd7kruv9hltyz3x5brj.png)
+
 # Requirements
 * python >= 2.7 && python < 3.0
 * python-dev (if you are running on linux)
