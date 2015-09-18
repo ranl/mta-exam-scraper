@@ -39,8 +39,12 @@ class ExamSpider(scrapy.Spider):
     view_state = '__VIEWSTATE'
     solution_string = ur'\u05e4\u05ea\u05e8\u05d5\u05df'
 
-    def __init__(self, mta_domain='acty.mta.ac.il', megama=None):
+    def __init__(self, mta_domain='acty.mta.ac.il', megama=None, only_list_megama=0):
         super(ExamSpider, self).__init__()
+        if only_list_megama == 0:
+            self.only_list_megama = False
+        else:
+            self.only_list_megama = True
         self.mta_domain = mta_domain
         self.allowed_domains = [self.mta_domain]
         self.mta_exam_url = self.mta_exam_url_tmpl.format(self.mta_domain)
@@ -128,28 +132,29 @@ class ExamSpider(scrapy.Spider):
         megama_select, megama_event_target = self.get_select(response, 1)
 
         for megama in self.extract_options_gen(megama_select, Megama):
-            if not self._megama or str(megama['id']) in self._megama:
-                request = scrapy.FormRequest(
-                    self.mta_exam_url,
-                    callback=self.parse_courses,
-                    method='POST',
-                    formdata={
-                        self.view_state: self.extract_view_state(response),
-                        megama_event_target: str(megama['id']),
-                        self.event_target: megama_event_target,
-                    },
-                )
-                request.meta['megama'] = megama
-                request.meta['megama_event_target'] = megama_event_target
-
-                # Yield
-                yield megama
-                yield request
+            if self.only_list_megama:
+                print('{}\t{}'.format(megama['id'], megama['name'].encode('utf-8')))
             else:
-                self.log(
-                    'excluding megama={0}'.format(megama['id']),
-                    level=log.WARNING
-                )
+                if not self._megama or str(megama['id']) in self._megama:
+                    request = scrapy.FormRequest(
+                        self.mta_exam_url,
+                        callback=self.parse_courses,
+                        method='POST',
+                        formdata={
+                            self.view_state: self.extract_view_state(response),
+                            megama_event_target: str(megama['id']),
+                            self.event_target: megama_event_target,
+                        },
+                    )
+                    request.meta['megama'] = megama
+                    request.meta['megama_event_target'] = megama_event_target
+                    yield megama
+                    yield request
+                else:
+                    self.log(
+                        'excluding megama={0}'.format(megama['id']),
+                        level=log.WARNING
+                    )
 
     def parse_courses(self, response):
         """
