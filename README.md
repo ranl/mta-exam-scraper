@@ -30,6 +30,9 @@ git clone https://github.com/ranl/mta-exam-scraper.git
 ```
 cd mta-exam-scraper
 
+# print all the megamot ids & names
+scrapy crawl exam_spider -t jsonlines -o - -a only_list_megama=1 --loglevel=ERROR
+
 # scrap all the exams from MTA and print the items as json to STDOUT
 scrapy crawl exam_spider -t jsonlines -o - --loglevel=ERROR
 
