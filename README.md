@@ -8,7 +8,7 @@ Scrap exam information from MTA website
 * python >= 2.7 && python < 3.0
 * python-dev (if you are running on linux)
 * pip
-* scrapy == 0.24.4
+* [scrapy == 0.24.4](http://doc.scrapy.org/en/0.24/intro/tutorial.html)
 
 # Installing python stuff on linux
 ```
